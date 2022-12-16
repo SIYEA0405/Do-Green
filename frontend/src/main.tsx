@@ -7,6 +7,7 @@ import Home from './components/Home';
 import './index.css';
 import CardPage from './pages/CardPage';
 import MyPage from './pages/MyPage';
+import NewsPage from './pages/NewsPage';
 
 const router = createBrowserRouter([
   {
@@ -16,7 +17,8 @@ const router = createBrowserRouter([
       { index: true, path: '/', element: <Home /> },
       { path: '/mypage', element: <MyPage /> },
       { path: '/admin', element: <Admin /> },
-      { path: '/cards/:cardId', element: <CardPage /> },
+      { path: '/categories/:catId', element: <CardPage /> },
+      { path: '/cards/:cardId', element: <NewsPage /> },
     ],
   },
 ]);

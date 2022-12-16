@@ -1,5 +1,12 @@
 import React from 'react';
+import CardPageNav from '../components/CardPageNav';
+import CategoyCard from '../components/CategoyCard';
 
 export default function CardPage() {
-  return <div>카드페이지</div>;
+  return (
+    <div>
+      <CardPageNav />
+      <CategoyCard />
+    </div>
+  );
 }
