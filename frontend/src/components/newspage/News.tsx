@@ -16,7 +16,7 @@ interface INews extends IPost {
 }
 
 const CommentTheme = {
-  form: 'flex justify-between px-2 py-4 bg-gradient-to-r from-zinc-400 to-gray-300',
+  form: 'flex justify-between px-2 py-4 bg-gradient-to-r from-gardenBG to-garden4 dark:from-forest4',
   input: 'flex-auto mx-2 py-1 rounded-md bg-slate-50 text-gray-800 focus:outline-none focus:ring-4 focus:ring-garden3',
   button:
     'mx-2 px-2 rounded-md bg-garden4 text-gray-50 font-semibold transition duration-0 hover:scale-110 hover:duration-700',
@@ -112,16 +112,21 @@ export default function NewsCard(props: INews) {
             setClickComment(!clickComment);
           }}
         >
-          <div className="flex flex-col w-96 h-96 rounded-md bg-gray-50 ">
+          <div className="flex flex-col w-96 h-96 rounded-md bg-gray-50 dark:bg-zinc-800 overflow-hidden">
             <div className="flex-auto w-full overflow-y-scroll">
               {data?.pages.map((page, index) => (
                 <Fragment key={index}>
                   {page.result.map((comment: IComment) => (
                     <div className="flex mx-4 my-4" key={comment._id}>
-                      <img src={comment.userId.imgUrl} alt="엘리스" className="w-7 h-7 rounded-full bg-garden4" />
-                      <div className="flex flex-col ml-2">
+                      <img src={comment.userId.imgUrl} alt="사진" className="w-7 h-7 rounded-full bg-garden4" />
+                      <div className="flex flex-col w-full ml-2">
                         <span className="text-sm font-semibold text-gray-400">{comment.userId.username}</span>
-                        <span className="text-md text-gray-400">{comment.comment}</span>
+                        <div className="flex justify-between w-full ">
+                          <p className="text-md font-medium text-gray-400">{comment.comment}</p>
+                          <p className="text-sm font-thin  text-gray-400">
+                            {comment.createdAt.split('.')[0].replace(/T/, '  ')}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   ))}
