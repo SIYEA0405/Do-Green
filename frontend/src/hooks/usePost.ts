@@ -8,7 +8,7 @@ export interface IPost {
   createdAt: string;
   updatedAt: string;
   likesNum: number;
-  isLike: boolean;
+  isLiked: boolean;
 }
 interface IPage {
   nextPage: number;
@@ -34,11 +34,10 @@ export default function usePost(catId?: string) {
       await api.get(`/post/like/${newPost._id}`);
     },
     onMutate: async (newPost: IPost) => {
-      //
-      //
-      console.log('믿고있다구!!!');
       await queryClient.cancelQueries({ queryKey: ['posts', catId] });
       const previousData = queryClient.getQueryData(['posts', catId]);
+      console.log(previousData);
+      console.log(newPost);
       queryClient.setQueryData<InfiniteData<IPage>>(['posts', catId], (oldData) => ({
         ...oldData!,
         pages: oldData!.pages.map((page) => ({
@@ -49,14 +48,10 @@ export default function usePost(catId?: string) {
       return { previousData };
     },
     onError: (err, newPost, context) => {
-      //
-      //
-      console.log(err);
       queryClient.setQueryData(['posts'], context?.previousData);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['todos', catId] });
-      console.log('좋아요 통신 성공!');
     },
   });
 

@@ -32,7 +32,7 @@ export default function NewsPage() {
               createdAt={post.createdAt}
               updatedAt={post.updatedAt}
               likesNum={post.likesNum}
-              isLike={post.isLike}
+              isLiked={post.isLiked}
               key={post._id}
             />
           ))}

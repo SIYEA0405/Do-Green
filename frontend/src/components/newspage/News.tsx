@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Fragment, FormEvent, ChangeEvent } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { FaRegHeart } from 'react-icons/fa';
+import { FaHeart } from 'react-icons/fa';
 import { ImBubble } from 'react-icons/im';
 import useComment, { IComment } from '../../hooks/useComment';
 import Loading from '../loadings/Loading';
@@ -32,7 +32,6 @@ export default function NewsCard(props: INews) {
   } = useComment(props._id);
   const { addLike } = usePost(props.categoryId);
   const { ref, inView } = useInView();
-  console.log(props._id);
   useEffect(() => {
     if (inView) {
       fetchNextPage();
@@ -78,8 +77,8 @@ export default function NewsCard(props: INews) {
         <div className="w-full p-6 text-md dark:text-slate-50">{props.content}</div>
         <div className="flex justify-between  px-6 py-2 rounded-b-lg bg-gradient-to-r from-gardenBG to-garden4 dark:from-forest4">
           <div className="flex items-center">
-            <FaRegHeart
-              className={'mr-4 hover:cursor-pointer dark:text-slate-50' + (props.isLike ? 'after:text-red-500' : '')}
+            <FaHeart
+              className={'mr-4 hover:cursor-pointer dark:text-slate-50 ' + (props.isLiked ? 'text-red-400' : '')}
               onClick={() =>
                 handleClickLike({
                   _id: props._id,
@@ -87,8 +86,8 @@ export default function NewsCard(props: INews) {
                   imageList: props.imageList,
                   createdAt: props.createdAt,
                   updatedAt: props.updatedAt,
-                  likesNum: props.isLike ? props.likesNum - 1 : props.likesNum + 1,
-                  isLike: !props.isLike,
+                  likesNum: props.isLiked ? props.likesNum - 1 : props.likesNum + 1,
+                  isLiked: !props.isLiked,
                 })
               }
             />
