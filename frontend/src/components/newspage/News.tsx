@@ -9,6 +9,7 @@ import Modal from '../common/Modal';
 import { useUserLoginStore } from '../wastebasket/store';
 import { AlertModal } from '../common/AlertModal';
 import NewsCarousel from './NewsCarousel';
+import { AuthStore } from '../../hooks/useAuth';
 
 interface INews {
   categoryName: string;
@@ -31,7 +32,7 @@ export default function NewsCard(props: INews) {
   const [clickHeart, setClickHeart] = useState<boolean>(false);
   const [clickComment, setClickComment] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>('');
-  const isLoggedIn = useUserLoginStore((state) => state.isLogin);
+  const isLoggedIn = !!AuthStore((state) => state.token);
   const {
     addComment,
     commentQuery: { status, fetchNextPage, hasNextPage, data },
@@ -50,8 +51,11 @@ export default function NewsCard(props: INews) {
 
   const handleFocus = () => {
     if (!isLoggedIn) {
-      return <AlertModal title="로그인" message="로그인이 필요한 서비스입니다." />;
     }
+  };
+
+  const getLoginModal = () => {
+    return <AlertModal title="로그인" message="로그인이 필요한 서비스입니다." />;
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -73,7 +77,7 @@ export default function NewsCard(props: INews) {
       </div>
       <div className="flex flex-col w-10/12 h-full  bg-slate-50 shadow-2xl rounded-lg overflow-hidden md:w-9/12 dark:bg-zinc-800 lg:w-8/12">
         <div className="flex relative justify-center mt-6 rounded-t-md">
-          {props.imageList.length !== 0 && <NewsCarousel imageList={props.imageList} />}
+          {props.imageList[0] !== '' && <NewsCarousel imageList={props.imageList} />}
         </div>
         <div className="w-full p-6 text-md dark:text-slate-50">{props.content}</div>
         <div className="flex justify-between  px-6 py-2 rounded-b-lg bg-gradient-to-r from-gardenBG to-garden4 dark:from-forest4">
@@ -83,7 +87,9 @@ export default function NewsCard(props: INews) {
               className="mr-4 hover:cursor-pointer dark:text-slate-50"
               onClick={() => setClickComment(!clickComment)}
             />
-            <div className="text-sm text-garden4 font-semibold">{props.likeNum} 명이 이 글을 좋아합니다.</div>
+            {props.likeNum !== 0 && (
+              <div className="text-sm text-garden4 font-semibold">{props.likeNum} 명이 이 글을 좋아합니다.</div>
+            )}
           </div>
           <span className=" text-slate-50 font-semibold text-sm">{props.createdAt}</span>
         </div>
