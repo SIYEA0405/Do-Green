@@ -1,5 +1,4 @@
-import { ResultType } from '@remix-run/router/dist/utils';
-import React, { useEffect, useState, useCallback, Fragment, FormEvent, ChangeEvent } from 'react';
+import React, { useEffect, useState, Fragment, FormEvent, ChangeEvent } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { FaRegHeart } from 'react-icons/fa';
 import { ImBubble } from 'react-icons/im';
@@ -7,7 +6,6 @@ import useComment, { IComment } from '../../hooks/useComment';
 import Loading from '../loadings/Loading';
 import Modal from '../common/Modal';
 import { useUserInfo } from '../../hooks/store';
-import { AlertModal } from '../common/AlertModal';
 import NewsCarousel from './NewsCarousel';
 import usePost, { IPost } from '../../hooks/usePost';
 
@@ -41,9 +39,10 @@ export default function NewsCard(props: INews) {
     }
   }, [inView]);
 
-  const handleFocus = () => {
+  const handleFocus = (e: React.FocusEvent<HTMLFormElement>) => {
     if (!isLoggedIn) {
       alert('로그인이 필요한 서비스입니다.');
+      e.target?.blur();
     }
   };
 
@@ -110,8 +109,8 @@ export default function NewsCard(props: INews) {
             setClickComment(!clickComment);
           }}
         >
-          <div className="flex flex-col w-96 h-96 rounded-md bg-gray-50 overflow-hidden">
-            <div className="flex-auto w-full">
+          <div className="flex flex-col w-96 h-96 rounded-md bg-gray-50 ">
+            <div className="flex-auto w-full overflow-y-scroll">
               {data?.pages.map((page, index) => (
                 <Fragment key={index}>
                   {page.result.map((comment: IComment) => (
