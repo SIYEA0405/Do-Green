@@ -9,7 +9,6 @@ import Modal from '../common/Modal';
 import { useUserLoginStore } from '../../hooks/store';
 import { AlertModal } from '../common/AlertModal';
 import NewsCarousel from './NewsCarousel';
-import { AuthStore } from '../../hooks/useAuth';
 
 interface INews {
   categoryName: string;
@@ -32,7 +31,7 @@ export default function NewsCard(props: INews) {
   const [clickHeart, setClickHeart] = useState<boolean>(false);
   const [clickComment, setClickComment] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>('');
-  const isLoggedIn = !!AuthStore((state) => state.token);
+  const isLoggedIn = !!useUserLoginStore((state) => state.isLogin);
   const {
     addComment,
     commentQuery: { status, fetchNextPage, hasNextPage, data },
