@@ -3,18 +3,16 @@ import { useParams } from 'react-router-dom';
 import { useInView } from 'react-intersection-observer';
 import NewsSkeleton from '../components/loadings/NewsSkeleton';
 import News from '../components/newspage/News';
-import { useOneCategory } from '../hooks/useCategory';
 import usePost, { IPost } from '../hooks/usePost';
+import { useSelectedCategory } from '../hooks/useCategory';
 
 export default function NewsPage() {
-  const { catId } = useParams();
   const { ref, inView } = useInView();
-  const {
-    categoryQuery: { data: category },
-  } = useOneCategory(catId);
+  const { mascotImage, mascotName, _id } = useSelectedCategory();
+  console.log('zustand', mascotName, _id);
   const {
     postQuery: { status, fetchNextPage, hasNextPage, data },
-  } = usePost(catId || 'null');
+  } = usePost(_id);
 
   useEffect(() => {
     if (inView) {
@@ -26,19 +24,20 @@ export default function NewsPage() {
     <div className="w-full min-h-screen mt-32 mb-24">
       {data?.pages.map((page, index) => (
         <Fragment key={index}>
-          {category &&
-            page.result.map((post: IPost) => (
-              <News
-                categoryName={category.mascotName}
-                categoryImg={category.mascotImage}
-                content={post.content}
-                newsId={post._id}
-                imageList={post.imageList}
-                createdAt={post.createdAt}
-                likeNum={post.likesNum}
-                key={post._id}
-              />
-            ))}
+          {page.result.map((post: IPost) => (
+            <News
+              categoryName={mascotName}
+              categoryImg={mascotImage}
+              content={post.content}
+              _id={post._id}
+              imageList={post.imageList}
+              createdAt={post.createdAt}
+              updatedAt={post.updatedAt}
+              likesNum={post.likesNum}
+              isLike={post.isLike}
+              key={post._id}
+            />
+          ))}
         </Fragment>
       ))}
       {(hasNextPage || status === 'loading') && <NewsSkeleton instance={ref} />}

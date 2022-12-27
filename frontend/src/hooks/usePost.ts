@@ -5,15 +5,12 @@ import { api } from '../util/api';
 
 export interface IPost {
   _id: string;
-  category: string;
   content: string;
   imageList: string[];
-  comments: string[];
   createdAt: string;
   updatedAt: string;
   likesNum: number;
-  likeUserList: string[];
-  __v: number;
+  isLike: boolean;
 }
 interface IPage {
   page: number;

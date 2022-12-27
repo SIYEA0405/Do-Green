@@ -1,6 +1,7 @@
 import { api } from '../util/api';
 import { useQuery } from '@tanstack/react-query';
-import create from 'zustand/react';
+import create from 'zustand';
+import { persist } from 'zustand/middleware';
 
 export interface ICategory {
   _id: string;
@@ -26,11 +27,17 @@ export default function useCategory() {
   return { catQuery };
 }
 
-export const useSelectedCategory = create<ICategoryStore>((set) => ({
-  _id: '',
-  categoryName: '',
-  mascotName: '',
-  mascotImage: '',
-  posts: [],
-  setCategory: (category: ICategory) => set(category),
-}));
+export const useSelectedCategory = create<ICategoryStore, [['zustand/persist', ICategoryStore]]>(
+  persist(
+    (set) => ({
+      _id: '',
+      categoryName: '',
+      mascotName: '',
+      mascotImage: '',
+      posts: [],
+      setCategory: (category: ICategory) => set(category),
+      getStorage: () => sessionStorage,
+    }),
+    { name: 'category-store' },
+  ),
+);

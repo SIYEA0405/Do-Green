@@ -9,15 +9,11 @@ import Modal from '../common/Modal';
 import { useUserLoginStore } from '../../hooks/store';
 import { AlertModal } from '../common/AlertModal';
 import NewsCarousel from './NewsCarousel';
+import { IPost } from '../../hooks/usePost';
 
-interface INews {
+interface INews extends IPost {
   categoryName: string;
   categoryImg: string;
-  newsId: string;
-  content: string;
-  imageList: string[];
-  createdAt: string;
-  likeNum: number;
 }
 
 const CommentTheme = {
