@@ -1,5 +1,4 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { useInView } from 'react-intersection-observer';
 import NewsSkeleton from '../components/loadings/NewsSkeleton';
 import News from '../components/newspage/News';
@@ -9,11 +8,9 @@ import { useSelectedCategory } from '../hooks/useCategory';
 export default function NewsPage() {
   const { ref, inView } = useInView();
   const { mascotImage, mascotName, _id } = useSelectedCategory();
-  console.log('zustand', mascotName, _id);
   const {
     postQuery: { status, fetchNextPage, hasNextPage, data },
   } = usePost(_id);
-
   useEffect(() => {
     if (inView) {
       fetchNextPage();
@@ -28,6 +25,7 @@ export default function NewsPage() {
             <News
               categoryName={mascotName}
               categoryImg={mascotImage}
+              categoryId={_id}
               content={post.content}
               _id={post._id}
               imageList={post.imageList}

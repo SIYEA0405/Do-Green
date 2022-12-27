@@ -1,19 +1,20 @@
 import { ResultType } from '@remix-run/router/dist/utils';
 import React, { useEffect, useState, useCallback, Fragment, FormEvent, ChangeEvent } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { BsFillHeartFill } from 'react-icons/bs';
+import { FaRegHeart } from 'react-icons/fa';
 import { ImBubble } from 'react-icons/im';
 import useComment, { IComment } from '../../hooks/useComment';
 import Loading from '../loadings/Loading';
 import Modal from '../common/Modal';
-import { useUserLoginStore } from '../../hooks/store';
+import { useUserInfo } from '../../hooks/store';
 import { AlertModal } from '../common/AlertModal';
 import NewsCarousel from './NewsCarousel';
-import { IPost } from '../../hooks/usePost';
+import usePost, { IPost } from '../../hooks/usePost';
 
 interface INews extends IPost {
   categoryName: string;
   categoryImg: string;
+  categoryId: string;
 }
 
 const CommentTheme = {
@@ -24,33 +25,26 @@ const CommentTheme = {
 };
 
 export default function NewsCard(props: INews) {
-  const [clickHeart, setClickHeart] = useState<boolean>(false);
   const [clickComment, setClickComment] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>('');
-  const isLoggedIn = !!useUserLoginStore((state) => state.isLogin);
+  const isLoggedIn = useUserInfo((state) => state.existUser);
   const {
     addComment,
     commentQuery: { status, fetchNextPage, hasNextPage, data },
-  } = useComment(props.newsId);
+  } = useComment(props._id);
+  const { addLike } = usePost(props.categoryId);
   const { ref, inView } = useInView();
-
+  console.log(props._id);
   useEffect(() => {
     if (inView) {
       fetchNextPage();
     }
   }, [inView]);
 
-  const handleClickHeart = () => {
-    return;
-  };
-
   const handleFocus = () => {
     if (!isLoggedIn) {
+      alert('로그인이 필요한 서비스입니다.');
     }
-  };
-
-  const getLoginModal = () => {
-    return <AlertModal title="로그인" message="로그인이 필요한 서비스입니다." />;
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -60,8 +54,16 @@ export default function NewsCard(props: INews) {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (inputValue.length === 0) return;
-    addComment.mutate({ postId: props.newsId, comment: inputValue });
+    addComment.mutate({ postId: props._id, comment: inputValue });
     setInputValue('');
+  };
+
+  const handleClickLike = (post: IPost) => {
+    if (!isLoggedIn) {
+      alert('로그인이 안돼있어요');
+      return;
+    }
+    addLike.mutate(post);
   };
 
   return (
@@ -77,13 +79,26 @@ export default function NewsCard(props: INews) {
         <div className="w-full p-6 text-md dark:text-slate-50">{props.content}</div>
         <div className="flex justify-between  px-6 py-2 rounded-b-lg bg-gradient-to-r from-gardenBG to-garden4 dark:from-forest4">
           <div className="flex items-center">
-            <BsFillHeartFill className="mr-4 hover:cursor-pointer dark:text-slate-50" onClick={handleClickHeart} />
+            <FaRegHeart
+              className={'mr-4 hover:cursor-pointer dark:text-slate-50' + (props.isLike ? 'after:text-red-500' : '')}
+              onClick={() =>
+                handleClickLike({
+                  _id: props._id,
+                  content: props.content,
+                  imageList: props.imageList,
+                  createdAt: props.createdAt,
+                  updatedAt: props.updatedAt,
+                  likesNum: props.isLike ? props.likesNum - 1 : props.likesNum + 1,
+                  isLike: !props.isLike,
+                })
+              }
+            />
             <ImBubble
-              className="mr-4 hover:cursor-pointer dark:text-slate-50"
+              className={'mr-4 hover:cursor-pointer dark:text-slate-50'}
               onClick={() => setClickComment(!clickComment)}
             />
-            {props.likeNum !== 0 && (
-              <div className="text-sm text-garden4 font-semibold">{props.likeNum} 명이 이 글을 좋아합니다.</div>
+            {props.likesNum !== 0 && (
+              <div className="text-sm text-garden4 font-semibold">{props.likesNum} 명이 이 글을 좋아합니다.</div>
             )}
           </div>
           <span className=" text-slate-50 font-semibold text-sm">{props.createdAt}</span>

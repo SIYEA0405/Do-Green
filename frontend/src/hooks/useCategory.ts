@@ -36,8 +36,7 @@ export const useSelectedCategory = create<ICategoryStore, [['zustand/persist', I
       mascotImage: '',
       posts: [],
       setCategory: (category: ICategory) => set(category),
-      getStorage: () => sessionStorage,
     }),
-    { name: 'category-store' },
+    { name: 'category-store', getStorage: () => sessionStorage },
   ),
 );
