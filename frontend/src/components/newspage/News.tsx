@@ -78,7 +78,9 @@ export default function NewsCard(props: INews) {
         <div className="flex justify-between  px-6 py-2 rounded-b-lg bg-gradient-to-r from-gardenBG to-garden4 dark:from-forest4">
           <div className="flex items-center">
             <FaHeart
-              className={'mr-4 hover:cursor-pointer dark:text-slate-50 ' + (props.isLiked ? 'text-red-400' : '')}
+              className={
+                'mr-4 hover:cursor-pointer dark:text-slate-50 ' + (isLoggedIn && props.isLiked ? 'text-red-400' : '')
+              }
               onClick={() =>
                 handleClickLike({
                   _id: props._id,
@@ -99,7 +101,9 @@ export default function NewsCard(props: INews) {
               <div className="text-sm text-garden4 font-semibold">{props.likesNum} 명이 이 글을 좋아합니다.</div>
             )}
           </div>
-          <span className=" text-slate-50 font-semibold text-sm">{props.createdAt}</span>
+          <span className=" text-slate-50 font-semibold text-sm">
+            {props.createdAt.split('.')[0].replace(/T/, '  ')}
+          </span>
         </div>
       </div>
       {clickComment && (
